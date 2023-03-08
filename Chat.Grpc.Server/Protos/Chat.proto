@@ -1,5 +1,7 @@
 ﻿syntax = "proto3";
 
+option csharp_namespace = "ChatGrpc";
+
 message ChatMessage {
     string from = 1;
     string msg = 2;
@@ -27,8 +29,8 @@ message ReceiveMsgRequest {
 }
 
 service ChatService {
-    rpc join(User) returns (JoinResponse) {}
-    rpc sendMsg(ChatMessage) returns (Empty) {}
-    rpc receiveMsg(Empty) returns (stream ChatMessage) {}
-    rpc getAllUsers(Empty) returns (UserList) {}
+    rpc Join(User) returns (JoinResponse) {}
+    rpc SendMsg(ChatMessage) returns (Empty) {}
+    rpc ReceiveMsg(Empty) returns (stream ChatMessage) {}
+    rpc GetAllUsers(Empty) returns (UserList) {}
 }
