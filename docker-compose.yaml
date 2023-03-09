@@ -1,0 +1,27 @@
+version: '3'
+services:
+  chatservice:
+    build:
+      context: .
+      dockerfile: Chat.Grpc.Server/Dockerfile
+    ports:
+      - "5188:80"
+      - "7188:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "7188"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+  envoygateway:
+    build:
+      context: .
+      dockerfile: Chat.Grpc.Envoy/Dockerfile
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+    volumes:
+      - ./Chat.Grpc.Envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./Chat.Grpc.Envoy/https.crt:/etc/ssl/certs/https.crt
+      - ./Chat.Grpc.Envoy/key.pem:/etc/ssl/certs/key.pem

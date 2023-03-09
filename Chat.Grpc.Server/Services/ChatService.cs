@@ -1,5 +1,6 @@
 ﻿using ChatGrpc;
 using Grpc.Core;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.Grpc.Server.Services
 {
@@ -15,6 +16,7 @@ namespace Chat.Grpc.Server.Services
 			_obsevers = new List<IServerStreamWriter<ChatMessage>>();
 		}
 
+		[HttpPost]
 		public override Task<JoinResponse> Join(User user, ServerCallContext context)
 		{
 			var existUser = _users.Users.Any(x => x.Id == user.Id);

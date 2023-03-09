@@ -6,7 +6,7 @@ import { ChatServiceClient } from "./chat_grpc_web_pb";
 import ChatPage from "./pages/ChatPage";
 import { useState, useRef } from "react";
 
-const client = new ChatServiceClient("http://localhost:8080", null, null);
+const client = new ChatServiceClient("http://localhost:10000", null, null);
 
 export default function App() {
   const inputRef = useRef(null);
