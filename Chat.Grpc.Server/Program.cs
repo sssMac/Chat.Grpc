@@ -1,30 +1,28 @@
+using System.Net;
+using Chat.Grpc.Server.Services;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    builder.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader()
-           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
-}));
+	options.ForwardedHeaders =
+		ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+builder.Services.AddGrpc();
+builder.Services.AddCors();
 
-builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseRouting();
+app.UseForwardedHeaders();
+app.UseGrpcWeb();
+
+app.UseEndpoints(endpoints =>
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
-app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-app.UseCors();
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+	endpoints.MapGrpcService<ChatService>().EnableGrpcWeb();
+});
 
 app.Run();
